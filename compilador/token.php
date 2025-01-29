@@ -14,7 +14,7 @@ class token
     }
 
     public function __toString() {
-        return "Token: {$this->tok}, Valor: {$this->valor}, Início: {$this->inicio}, Fim: {$this->fim}";
+        return $this->tok;
     }
 }
 
