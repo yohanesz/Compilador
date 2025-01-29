@@ -14,16 +14,22 @@
     </form>
     <br>
     <?php
-        include("token.php");
-        include("Analisador_lexico.php");
-        include("Analisador_SLR.php");
+        require("token.php");
+        require("Analisador_lexico.php");
+        require("Analisador_SLR.php");
         if(isset($_GET["formulario"])){
             $entrada = $_GET["formulario"];
             $analisador = new Analisador_lexico();
             $analisador->analisa($entrada);
-
+            
             $asc = new SLR();
-            $asc->parser($analisador->tokens);
+            // echo $asc->parser($analisador->tokens);
+            // $asc->parser($analisador->tokens);
+
+            if ($asc->parser($analisador->tokens))
+                echo "\nLinguagem aceita";
+            else
+                echo "\nErro ao processar entrada";
 
         } 
     ?>
