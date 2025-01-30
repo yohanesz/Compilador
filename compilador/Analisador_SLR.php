@@ -2,7 +2,7 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
+require('analisador_semantico.php');
 
 define('NAO_TERMINAIS', [
     1 => 'PROGRAMA',
@@ -34,6 +34,8 @@ class SLR{
     private $afd;
     public $historico = [];
     public $lexico;
+    private $as;
+
 
 
     public function __construct() {
@@ -97,7 +99,7 @@ class SLR{
         37=> ['ACTION' => ['id' => 'S 100', 'const' => 'S 101', 'caracter' => 'S 102', 'string' => 'S 103'],
             'GOTO' => [9 => ['pv' => 38]]],
         38=> ['ACTION' => ['pv' => 'S 39'], 'GOTO' => []],
-        39=> ['ACTION' => ['fc' => 'R 4 11', 'leia' => 'R 4 11', 'imprima' => 'R 4 11', 'enquanto' => 'R 4 11', 'senao' => 'R 4 11', 'se' => 'R 4 11', 'para' => 'R 4 11', 'id' => 'R 4 11', 'funcao' => 'R 4 11'], 'GOTO' => []], //adicionei o id pois no para vai usar 
+        39=> ['ACTION' => ['fc' => 'R 4 11', 'leia' => 'R 4 11', 'imprima' => 'R 4 11', 'enquanto' => 'R 4 11', 'senao' => 'R 4 11', 'se' => 'R 4 11', 'para' => 'R 4 11', 'id' => 'R 4 11', 'funcao' => 'R 4 11', 'string' => 'R 4 11', 'int' => 'R 4 11', 'char' => 'R 4 11', 'array' => 'R 4 11'], 'GOTO' => []], //adicionei o id pois no para vai usar 
         40=> ['ACTION' => ['ap' => 'S 41'], 'GOTO' => []],
         41=> ['ACTION' => ['id' => 'S 25', 'const' => 'S 26', 'caracter' => 'S 27', 'string' => 'S 28'],
             'GOTO' => [9 => ['fp' => 42]]],
@@ -193,7 +195,7 @@ class SLR{
         77=> ['ACTION' => ['id' => 'S 87', 'leia' => 'S 40', 'imprima' => 'S 50'],
             'GOTO' => [11 => ['fp' => 78, 'fc' => 78], 12 => ['fp' => 78, 'fc' => 78], 14 => ['fp' => 78, 'fc' => 78], 15 => ['fp' => 78, 'fc' => 78], 16 => ['fp' => 78, 'fc' => 78]]],
         78=> ['ACTION' => ['fc' => 'S 79'], 'GOTO' => []],
-        79=> ['ACTION' => ['leia' => 'R 10 8', 'imprima' => 'R 10 8', 'enquanto' => 'R 10 8', 'senao' => 'R 10 8', 'se' => 'R 10 8', 'para' => 'R 10 8', 'fc' => 'R 10 8', 'int' => 'R 10 8', 'char' => 'R 10 8', 'array' => 'R 10 8', 'string' => 'R 10 8', 'funcao' => 'R 10 8'], 'GOTO' => []],
+        79=> ['ACTION' => ['id' => 'S 87', 'leia' => 'R 10 8', 'imprima' => 'R 10 8', 'enquanto' => 'R 10 8', 'senao' => 'R 10 8', 'se' => 'R 10 8', 'para' => 'R 10 8', 'fc' => 'R 10 8', 'int' => 'R 10 8', 'char' => 'R 10 8', 'array' => 'R 10 8', 'string' => 'R 10 8', 'funcao' => 'R 10 8'], 'GOTO' => []],
         80=> ['ACTION' => ['maior' => 'S 19', 'menor' => 'S 20', 'maiorIgual' => 'S 22', 'menorIgual' => 'S 23', 'igual' => 'S 21', 'diferente' => 'S 24'],
             'GOTO' => [18 => ['id' => 81, 'const' => 81, 'caracter' => 81, 'string' => 81 ]]],
         81=> ['ACTION' => ['id' => 'S 100', 'const' => 'S 101', 'caracter' => 'S 102', 'string' => 'S 103'],
@@ -269,12 +271,13 @@ class SLR{
         4 =>  ['id' => 211]]], // TIPO -> <tipo> . id pv]
         );
 
+        $this->as = new analisador_semantico();
     }
 
     public function parser($entrada){
         $pilha = array();
         array_push($pilha, 0);
-        echo "\nPilha: " . implode(' ', $pilha);
+        // echo "\nPilha: " . implode(' ', $pilha);
     
         $i = 0;
         while ($i < count($entrada)) {
@@ -288,13 +291,13 @@ class SLR{
                     'acao' => 'Erro',
                     'token' => $tokenAtual
                 ];
-                echo "\nErro: Token '{$tokenAtual}' não encontrado no estado " . end($pilha);
+                // echo "\nErro: Token '{$tokenAtual}' não encontrado no estado " . end($pilha);
                 return false;
             }
     
             $move = $this->afd[end($pilha)]['ACTION'][$tokenAtual];
             $acao = explode(' ', $move);
-            echo " | Ação: " . $move;
+            // echo " | Ação: " . $move;
     
             // Registra o histórico da ação
             $this->historico[] = [
@@ -312,34 +315,37 @@ class SLR{
                     for ($j = 0; $j < $acao[1]; $j++) {
                         array_pop($pilha);
                     }
-                    echo ' | Reduziu para ' . NAO_TERMINAIS[$acao[2]];                    
+                    // echo ' | Reduziu para ' . NAO_TERMINAIS[$acao[2]];                    
                     $desvio = $this->afd[end($pilha)]['GOTO'][$acao[2]][$entrada[$i]->tok];
                     array_push($pilha, $desvio);
                     break;
                 case 'ACC': // Accept
-                    echo ' Sintático Ok';
-                    $this->historico[] = [
-                        'pilha' => implode(' ', $pilha),
-                        'acao' => 'Accept',
-                        'token' => 'EOF'
-                    ];
+                    // echo ' Sintático Ok';
+                    // $this->historico[] = [
+                    //     'pilha' => implode(' ', $pilha),
+                    //     'acao' => 'Accept',
+                    //     'token' => 'EOF'
+                    // ];
                     return true;
                 default:
-                    // Caso haja um erro inesperado, registra no histórico e retorna false
                     $this->historico[] = [
                         'pilha' => implode(' ', $pilha),
                         'acao' => 'Erro',
                         'token' => $entrada[$i]->tok
                     ];
-                    echo "\nErro: Ação inválida detectada!";
                     return false;
             }
     
             // Exibe o estado atual da pilha
-            echo "\nPilha: " . implode(' ', $pilha);
-            echo " Token: " . $entrada[$i]->tok;
+            // echo "\nPilha: " . implode(' ', $pilha);
+            // echo " Token: " . $entrada[$i]->tok;
+
+            
+            $this->as->analiseSemantica(end($pilha), $entrada[$i]);
+            
         }
-    
+        
+        
         return false; // Caso o loop termine sem aceitar
     }
     

@@ -715,11 +715,10 @@ class Analisador_lexico {
 
     for ($i=0; $i < strlen($entrada); $i++) { 
         if (isset($delta[$estado]) && array_key_exists($entrada[$i], $delta[$estado])) {
-            // print($estado . " ");
             $valor .= $entrada[$i];
             $estado = $delta[$estado][$entrada[$i]];
+            
          } elseif(in_array($estado,$finais) ){
-            // print("else: " . $estado);
             $tok = $aux[$estado];
 
             $tempToken = new token();
@@ -743,7 +742,7 @@ class Analisador_lexico {
 
     }
 
-    if(in_array($estado,$finais) ){
+    if(in_array($estado,$finais) ){ //se estiver nos finais
         $tok = $aux[$estado];
 
         $tempToken = new token();
@@ -752,9 +751,8 @@ class Analisador_lexico {
         $tempToken->inicio = $inicio;
         $tempToken->fim = $fim;
 
-        if($estado != $esp){
+        if($estado != $esp){ //espaço
             array_push($listatokens, $tempToken);
-            
         }
         
         $valor = "";
