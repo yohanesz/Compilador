@@ -1,7 +1,7 @@
 <?php 
 
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 
 define('NAO_TERMINAIS', [
@@ -97,7 +97,7 @@ class SLR{
         37=> ['ACTION' => ['id' => 'S 100', 'const' => 'S 101', 'caracter' => 'S 102', 'string' => 'S 103'],
             'GOTO' => [9 => ['pv' => 38]]],
         38=> ['ACTION' => ['pv' => 'S 39'], 'GOTO' => []],
-        39=> ['ACTION' => ['fc' => 'R 4 11', 'leia' => 'R 4 11', 'imprima' => 'R 4 11', 'enquanto' => 'R 4 11', 'senao' => 'R 4 11', 'se' => 'R 4 11', 'para' => 'R 4 11', 'id' => 'R 4 11'], 'GOTO' => []], //adicionei o id pois no para vai usar 
+        39=> ['ACTION' => ['fc' => 'R 4 11', 'leia' => 'R 4 11', 'imprima' => 'R 4 11', 'enquanto' => 'R 4 11', 'senao' => 'R 4 11', 'se' => 'R 4 11', 'para' => 'R 4 11', 'id' => 'R 4 11', 'funcao' => 'R 4 11'], 'GOTO' => []], //adicionei o id pois no para vai usar 
         40=> ['ACTION' => ['ap' => 'S 41'], 'GOTO' => []],
         41=> ['ACTION' => ['id' => 'S 25', 'const' => 'S 26', 'caracter' => 'S 27', 'string' => 'S 28'],
             'GOTO' => [9 => ['fp' => 42]]],
@@ -178,7 +178,7 @@ class SLR{
           
                           
         69=> ['ACTION' => ['fc' => 'S 70'], 'GOTO' => []], // dupliquei aqui, que INFERNO 
-        250 => ['ACTION' => ['fc' => 'R 2 5'], 'GOTO' =>[5 => ['fc' => 'R 2 5']]],
+        250 => ['ACTION' => ['fc' => 'R 2 5'], 'GOTO' =>[]],
 
         70=> ['ACTION' => ['$' => 'R 8 1'], 'GOTO' => []],
         71=> ['ACTION' => ['ap' => 'S 72'], 'GOTO' => []],
@@ -230,16 +230,15 @@ class SLR{
         204 => ['ACTION' => ['int' => 'S 5', 'char' => 'S 6', 'array'=>'S 7', 'string'=>'S 8', 'fp' => 'R 0 2'], 
                 'GOTO' => [4 => ['id' => 9], 3 => ['int' => 11, 'char' => 11, 'string' => 11, 'array' => 11, 'fp' => 205], 2 => ['fp' => 205]]],
 
-        207 => ['ACTION' => ['leia' => 'S 40', 'imprima' => 'S 50', 'enquanto' => 'S 16', 'senao' => 'S 60', 'se' => 'S 29', 'para' => 'S 71', 'fc' => 'R 0 5', 'int' => 'S 5', 'char'=>'S 6', 'array'=>'S 7', 'string' => 'S 8', 'funcao' => 'S 202', 'id' => 'S 87'],
-        'GOTO' => [5 => ['id'=> 216, 'enquanto' => 61, 'se' => 63, 'senao' => 62, 'para' => 64, 'fc' => 250, 'int' => 210, 'string' => 210, 'char' => 210, 'array' => 210, 'funcao' => 215],  //lista_comandos
-                  6 =>  ['id'=> 61, 'enquanto' => 61, 'se' => 61, 'senao' => 61, 'para' => 61, 'fc' => 250, 'int' => 61, 'string' => 61, 'char' => 61, 'array' => 61, 'funcao' => 61],  //enquanto
-                  7 =>  ['id'=> 63, 'enquanto' => 63, 'se' => 63, 'senao' => 63, 'para' => 63, 'fc' => 250, 'int' => 63, 'string' => 63, 'char' => 63, 'array' => 63, 'funcao' => 63],  //se
-                  8 =>  ['id'=> 64, 'enquanto' => 64, 'se' => 64, 'senao' => 64, 'para' => 64, 'fc' => 250, 'int' => 64, 'string' => 64, 'char' => 64, 'array' => 64, 'funcao' => 64],  //para
-                  19 => ['id'=> 62, 'enquanto'=> 62, 'se' => 62, 'senao' => 62, 'para' => 62, 'fc' => 250, 'int' => 62, 'string' => 62, 'char' => 62, 'array' => 62, 'funcao' => 62],  //senao
-                  21 => ['id'=> 210, 'enquanto'=> 210, 'se' => 210, 'senao' => 210, 'para' => 210, 'fc' => 250, 'int' => 210, 'string' => 210, 'char' => 210, 'array' => 210, 'funcao' => 210],//dec_var
-                  22 => ['id'=> 215, 'enquanto'=> 215, 'se' => 215, 'senao' => 215, 'para' => 215, 'fc' => 250, 'int' => 215, 'string' => 215, 'char' => 215, 'array' => 215, 'funcao' => 215], // funcao
-                  11 => ['id'=> 216, 'enquanto'=> 216, 'se' => 216, 'senao' => 216, 'para' => 216, 'fc' => 250, 'int' => 216, 'string' => 216, 'char' => 216, 'array' => 216, 'funcao' => 216],
-        4 =>  ['id' => 211]]], // TIPO -> <tipo> . id pv]
+        207 => ['ACTION' => ['int' => 'S 5', 'char' => 'S 6', 'array'=>'S 7', 'string'=>'S 8', 'enquanto' => 'S 16', 'senao' => 'S 60', 'se'=>'S 29', 'para' => 'S 71', 'fp' => 'S 205', 'fc' => 'R 0 5', 'id' => 'S 87'], 
+                'GOTO' => [5 => ['id' => 216,'enquanto' => 61, 'se' => 63, 'senao' => 62, 'para' => 64, 'fc' => 209, 'int' => 210, 'string' => 210, 'char' => 210, 'array' => 210],  //lista_comandos
+                            6 => ['id' => 210 ,'enquanto' => 61, 'se' => 61, 'senao' => 61, 'para' => 61, 'fc' => 209, 'int' => 61, 'string' => 61, 'char' => 61, 'array' => 61],  //enquanto
+                            7 => ['id' => 210 ,'enquanto' => 63, 'se' => 63, 'senao' => 63, 'para' => 63, 'fc' => 209, 'int' => 63, 'string' => 63, 'char' => 63, 'array' => 63],  //se
+                            8 => ['id' => 210 ,'enquanto' => 64, 'se' => 64, 'senao' => 64, 'para' => 64, 'fc' => 209, 'int' => 64, 'string' => 64, 'char' => 64, 'array' => 64],  //para
+                            19 => ['id' => 210 ,'enquanto'=> 62, 'se' => 62, 'senao' => 62, 'para' => 62, 'fc' => 209, 'int' => 62, 'string' => 62, 'char' => 62, 'array' => 62],  //senao
+                            21 => ['id' => 210 ,'enquanto'=> 210, 'se' => 210, 'senao' => 210, 'para' => 210, 'fc' => 209, 'int' => 210, 'string' => 210, 'char' => 210, 'array' => 210],//dec_var
+                            11 => ['id'=> 216, 'enquanto'=> 216, 'se' => 216, 'senao' => 216, 'para' => 216, 'fc' => 209, 'int' => 216, 'string' => 216, 'char' => 216, 'array' => 216],
+                            4 =>  ['id' => 211]]], // TIPO -> <tipo> . id pv]
 
         205 => ['ACTION' => ['fp' => 'S 206'], 'GOTO' => []],
         206 => ['ACTION' => ['ac' => 'S 207'], 'GOTO' => []],
